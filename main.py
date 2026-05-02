@@ -66,20 +66,35 @@ def split(strand):
 
 def form_proteins(strand):
     proteins = []
-    protein_dict = {"AUG": "methionine", ("UUU", "UUC"): "phenylalanine",
-                    ("UUA", "UUG", "CUA", "CUU", "CUC", "CUG"): "leucine", ("AUA", "AUU", "AUC"): "isoleucine",
-                    ("GUA", "GUU", "GUC", "GUG"): "valine", ("UCA", "UCU", "UCC", "UCG", "AGC"): "serine",
-                    ("CCA", "CCU", "CCC", "CCG"): "proline", ("ACA", "ACU", "ACC", "ACG"): "threonine",
-                    ("GCA", "GCU", "GCC", "GCG"): "alanine", ("UAU", "UAC"): "tyrosine", ("CAU", "CAC"): "histidine",
-                    ("CAA", "CAG"): "glutamine", ("AAU", "AAC"): "asparagine", ("AAA", "AAG"): "lysine",
-                    ("GAU", "GAC"): "aspartate", ("GAA", "GAG"): "glutamate", ("UGU", "UGC"): "cysteine",
-                    "UGG": "tryptophan", ("AGA", "AGG", "CGA", "CGU", "CGC", "CGG"): "arginine",
-                    ("GGA", "GGU", "GGC", "GGG"): "glycine", ("UAA", "UGA", "UAG"): "stop"}
+    protein_dict = protein_dict = {
+    "AUG": "methionine",
+    "UUU": "phenylalanine", "UUC": "phenylalanine",
+    "UUA": "leucine", "UUG": "leucine", "CUA": "leucine", "CUU": "leucine", "CUC": "leucine", "CUG": "leucine",
+    "AUA": "isoleucine", "AUU": "isoleucine", "AUC": "isoleucine",
+    "GUA": "valine", "GUU": "valine", "GUC": "valine", "GUG": "valine",
+    "UCA": "serine", "UCU": "serine", "UCC": "serine", "UCG": "serine", "AGC": "serine",
+    "CCA": "proline", "CCU": "proline", "CCC": "proline", "CCG": "proline",
+    "ACA": "threonine", "ACU": "threonine", "ACC": "threonine", "ACG": "threonine",
+    "GCA": "alanine", "GCU": "alanine", "GCC": "alanine", "GCG": "alanine",
+    "UAU": "tyrosine", "UAC": "tyrosine",
+    "CAU": "histidine", "CAC": "histidine",
+    "CAA": "glutamine", "CAG": "glutamine",
+    "AAU": "asparagine", "AAC": "asparagine",
+    "AAA": "lysine", "AAG": "lysine",
+    "GAU": "aspartate", "GAC": "aspartate",
+    "GAA": "glutamate", "GAG": "glutamate",
+    "UGU": "cysteine", "UGC": "cysteine",
+    "UGG": "tryptophan",
+    "AGA": "arginine", "AGG": "arginine", "CGA": "arginine", "CGU": "arginine", "CGC": "arginine", "CGG": "arginine",
+    "GGA": "glycine", "GGU": "glycine", "GGC": "glycine", "GGG": "glycine",
+    "UAA": "stop", "UGA": "stop", "UAG": "stop"
+}
     if len(strand) != 0:
         for sequence in strand:
-            for key in protein_dict.keys():
-                if sequence in key:
-                    proteins.append(protein_dict[key])
+            protein = protein_dict.get(sequence)
+            if protein:
+                proteins.append(protein)
+                if protein == "stop":
                     break
         if "stop" not in proteins:
             proteins.append("...")
