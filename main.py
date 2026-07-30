@@ -1,6 +1,29 @@
 import create_random_strands as generator
 from random import choice
 
+protein_dict = {
+    "AUG": "methionine",
+    "UUU": "phenylalanine", "UUC": "phenylalanine",
+    "UUA": "leucine", "UUG": "leucine", "CUA": "leucine", "CUU": "leucine", "CUC": "leucine", "CUG": "leucine",
+    "AUA": "isoleucine", "AUU": "isoleucine", "AUC": "isoleucine",
+    "GUA": "valine", "GUU": "valine", "GUC": "valine", "GUG": "valine",
+    "UCA": "serine", "UCU": "serine", "UCC": "serine", "UCG": "serine", "AGC": "serine",
+    "CCA": "proline", "CCU": "proline", "CCC": "proline", "CCG": "proline",
+    "ACA": "threonine", "ACU": "threonine", "ACC": "threonine", "ACG": "threonine",
+    "GCA": "alanine", "GCU": "alanine", "GCC": "alanine", "GCG": "alanine",
+    "UAU": "tyrosine", "UAC": "tyrosine",
+    "CAU": "histidine", "CAC": "histidine",
+    "CAA": "glutamine", "CAG": "glutamine",
+    "AAU": "asparagine", "AAC": "asparagine",
+    "AAA": "lysine", "AAG": "lysine",
+    "GAU": "aspartate", "GAC": "aspartate",
+    "GAA": "glutamate", "GAG": "glutamate",
+    "UGU": "cysteine", "UGC": "cysteine",
+    "UGG": "tryptophan",
+    "AGA": "arginine", "AGG": "arginine", "CGA": "arginine", "CGU": "arginine", "CGC": "arginine", "CGG": "arginine",
+    "GGA": "glycine", "GGU": "glycine", "GGC": "glycine", "GGG": "glycine",
+    "UAA": "stop", "UGA": "stop", "UAG": "stop"
+}
 
 def five_three(answer, strand):
     if answer == "Y":
@@ -66,29 +89,6 @@ def split(strand):
 
 def form_proteins(strand):
     proteins = []
-    protein_dict = protein_dict = {
-    "AUG": "methionine",
-    "UUU": "phenylalanine", "UUC": "phenylalanine",
-    "UUA": "leucine", "UUG": "leucine", "CUA": "leucine", "CUU": "leucine", "CUC": "leucine", "CUG": "leucine",
-    "AUA": "isoleucine", "AUU": "isoleucine", "AUC": "isoleucine",
-    "GUA": "valine", "GUU": "valine", "GUC": "valine", "GUG": "valine",
-    "UCA": "serine", "UCU": "serine", "UCC": "serine", "UCG": "serine", "AGC": "serine",
-    "CCA": "proline", "CCU": "proline", "CCC": "proline", "CCG": "proline",
-    "ACA": "threonine", "ACU": "threonine", "ACC": "threonine", "ACG": "threonine",
-    "GCA": "alanine", "GCU": "alanine", "GCC": "alanine", "GCG": "alanine",
-    "UAU": "tyrosine", "UAC": "tyrosine",
-    "CAU": "histidine", "CAC": "histidine",
-    "CAA": "glutamine", "CAG": "glutamine",
-    "AAU": "asparagine", "AAC": "asparagine",
-    "AAA": "lysine", "AAG": "lysine",
-    "GAU": "aspartate", "GAC": "aspartate",
-    "GAA": "glutamate", "GAG": "glutamate",
-    "UGU": "cysteine", "UGC": "cysteine",
-    "UGG": "tryptophan",
-    "AGA": "arginine", "AGG": "arginine", "CGA": "arginine", "CGU": "arginine", "CGC": "arginine", "CGG": "arginine",
-    "GGA": "glycine", "GGU": "glycine", "GGC": "glycine", "GGG": "glycine",
-    "UAA": "stop", "UGA": "stop", "UAG": "stop"
-}
     if len(strand) != 0:
         for sequence in strand:
             protein = protein_dict.get(sequence)
