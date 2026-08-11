@@ -73,7 +73,3 @@ def decode(strand, strand_type, five_to_three):
     codons = extract_codons(converted)
     proteins = translate(codons)
     return converted, proteins
-
-converted, proteins = decode("TTTGCAACTGGCTTATGAGCTAACTCGGGCGTCCAT", TEMPLATE, "Y")
-print(converted)
-print(proteins)
