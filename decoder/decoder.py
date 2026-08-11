@@ -105,7 +105,7 @@ def form_proteins(strand):
 
 def main():
     generator.main()
-    with open("example_text.txt") as file_in:
+    with open("tests/example_text.txt") as file_in:
         for line in file_in:
             try:
                 line = line.strip()
