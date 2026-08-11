@@ -126,7 +126,8 @@ def main():
                 print(f"{error}\n")
 
 
-try:
-    main()
-except KeyboardInterrupt:
-    print("\n\nGoodbye!")
+if __name__ == "main":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nGoodbye!")

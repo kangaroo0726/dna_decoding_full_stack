@@ -49,4 +49,5 @@ def main():
     write_to_file("tests/example_text.txt", strand_list)
 
 
-main()
+if __name__ == "main":
+    main()
