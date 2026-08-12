@@ -1,3 +1,4 @@
 tests/example_text.txt
 decoder/__pycache__/
 __pycache__/
+.venv/

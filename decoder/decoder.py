@@ -1,11 +1,9 @@
-from constants import PROTEIN_DICT as protein_dict, MRNA, CODING, TEMPLATE, COMPLEMENT_DICT as complement_dict, STOP_CODONS, MRNA_BASES, DNA_BASES, START_CODON
+from .constants import PROTEIN_DICT as protein_dict, MRNA, CODING, TEMPLATE, COMPLEMENT_DICT as complement_dict, STOP_CODONS, MRNA_BASES, DNA_BASES, START_CODON
 
 def five_three(answer, strand):
-    if answer == "Y":
+    if answer:
         return strand
-    if answer == "N":
-        return strand[::-1]
-    raise ValueError("Invalid 5' to 3' orientation")
+    return strand[::-1]
 
 
 def convert(type_strand, strand):

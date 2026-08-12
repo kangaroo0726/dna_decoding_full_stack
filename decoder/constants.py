@@ -30,6 +30,6 @@ DNA_BASES = {"A", "T", "C", "G"}
 
 COMPLEMENT_DICT = {"T": "A", "A": "U", "G": "C", "C": "G"}
 
-MRNA = "m"
-CODING = "c"
-TEMPLATE = "t"
+MRNA = "mrna"
+CODING = "coding"
+TEMPLATE = "template"
