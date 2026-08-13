@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from decoder.decoder import decode
 from pydantic import BaseModel
 
@@ -11,5 +11,8 @@ class DecodeRequest(BaseModel):
 
 @app.post("/decode")
 def decode_dna(request: DecodeRequest):
-    converted, proteins = decode(request.strand, request.strand_type, request.five_to_three)
-    return {"converted": converted, "proteins": proteins}
+    try:
+        converted, proteins = decode(request.strand, request.strand_type, request.five_to_three)
+        return {"converted": converted, "proteins": proteins}
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
