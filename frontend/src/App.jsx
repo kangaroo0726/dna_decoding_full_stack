@@ -6,16 +6,11 @@ function App() {
   const [fiveToThree, setFiveToThree] = useState(false);
   const [converted, setConverted] = useState("");
   const [proteins, setProteins] = useState("");
-
-  function readProteins(proteins) {
-    let proteinList = "";
-    for (let i = 0; i < proteins.length; i++) {
-      proteinList += proteins[i] + "\t";
-    }
-    return proteinList;
-  }
+  const [loading, setLoading] = useState(false);
 
   async function decodeDna() {
+    setConverted("decoding");
+    setLoading(true);
     const requestObject = { "strand": strand, 
                             "strand_type": strandType, 
                             "five_to_three": fiveToThree }
@@ -24,17 +19,22 @@ function App() {
                                                                       headers: { "Content-Type": "application/json" }, 
                                                                       body: JSON.stringify(requestObject) })
       if (!response.ok) {
+        console.log(response);
+        const errorData = await response.json();
+        setConverted(errorData.detail);
         throw new Error(`HTTP Error Status: ${response.status}`)
       }
 
       const data = await response.json();
       setConverted(data.converted);
-      setProteins(readProteins(data.proteins))
+      setProteins(data.proteins.join(", "))
 
       console.log(data);
     } catch (error) {
       console.log(`Fetch failed: ${error}`)
+      setProteins("");
     }
+    setLoading(false);
   }
 
   return (
@@ -48,7 +48,7 @@ function App() {
       </select>
       <input type="checkbox" checked={ fiveToThree } onChange={ (event) => setFiveToThree(event.target.checked) } id="orientation"/>
       <label htmlFor="orientation">Five to three</label>
-      <button onClick={ decodeDna }>Decode</button>
+      <button disabled={ loading } onClick={ decodeDna }>Decode</button>
       <p>{converted}</p>
       <p>{proteins}</p>
     </div>
