@@ -18,7 +18,7 @@ PROTEIN_DICT = {
     "UGU": "cysteine", "UGC": "cysteine",
     "UGG": "tryptophan",
     "AGA": "arginine", "AGG": "arginine", "CGA": "arginine", "CGU": "arginine", "CGC": "arginine", "CGG": "arginine",
-    "GGA": "glycine", "GGU": "glycine", "GGC": "glycine", "GGG": "glycine",
+    "GGA": "glycine", "GGU": "glycine", "GGC": "glycine", "GGG": "glycine", "AGU": "serine",
     "UAA": "stop", "UGA": "stop", "UAG": "stop"
 }
 

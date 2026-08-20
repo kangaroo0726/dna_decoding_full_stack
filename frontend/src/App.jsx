@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { DnaInput } from "./components/DnaInput.jsx"
+import { DecodeButton } from "./components/DecodeButton.jsx"
+import { Results } from "./components/Results.jsx";
 
 function App() {
   const [strand, setStrand] = useState("");
@@ -19,7 +22,6 @@ function App() {
                                                                       headers: { "Content-Type": "application/json" }, 
                                                                       body: JSON.stringify(requestObject) })
       if (!response.ok) {
-        console.log(response);
         const errorData = await response.json();
         setConverted(errorData.detail);
         throw new Error(`HTTP Error Status: ${response.status}`)
@@ -29,7 +31,6 @@ function App() {
       setConverted(data.converted);
       setProteins(data.proteins.join(", "))
 
-      console.log(data);
     } catch (error) {
       console.log(`Fetch failed: ${error}`)
       setProteins("");
@@ -40,17 +41,9 @@ function App() {
   return (
     <div>
       <h1>DNA Decoder</h1>
-      <textarea placeholder="Enter sequence" onChange={ (event) => setStrand(event.target.value) } value={ strand }></textarea>
-      <select value={ strandType } onChange={ (event) => setStrandType(event.target.value) }>
-        <option value="template">Template</option>
-        <option value="coding">Coding</option>
-        <option value="mrna">mRNA</option>
-      </select>
-      <input type="checkbox" checked={ fiveToThree } onChange={ (event) => setFiveToThree(event.target.checked) } id="orientation"/>
-      <label htmlFor="orientation">Five to three</label>
-      <button disabled={ loading } onClick={ decodeDna }>Decode</button>
-      <p>{converted}</p>
-      <p>{proteins}</p>
+      <DnaInput strand={ strand } setStrand={ setStrand } strandType={ strandType } setStrandType={ setStrandType } fiveToThree={ fiveToThree } setFiveToThree={ setFiveToThree }/>
+      <DecodeButton loading={ loading } decodeDna={ decodeDna }/>
+      <Results converted={ converted } proteins={ proteins }/>
     </div>
   );
 }
