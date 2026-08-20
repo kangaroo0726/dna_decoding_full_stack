@@ -13,6 +13,7 @@ function App() {
 
   async function decodeDna() {
     setConverted("decoding");
+    setProteins("");
     setLoading(true);
     const requestObject = { "strand": strand, 
                             "strand_type": strandType, 
