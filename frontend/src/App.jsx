@@ -1,3 +1,4 @@
+import "./App.css";
 import { useState } from "react";
 import { DnaInput } from "./components/DnaInput.jsx"
 import { DecodeButton } from "./components/DecodeButton.jsx"
@@ -40,7 +41,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app">
       <h1>DNA Decoder</h1>
       <DnaInput strand={ strand } setStrand={ setStrand } strandType={ strandType } setStrandType={ setStrandType } fiveToThree={ fiveToThree } setFiveToThree={ setFiveToThree }/>
       <DecodeButton loading={ loading } decodeDna={ decodeDna }/>
