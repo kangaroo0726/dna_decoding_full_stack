@@ -70,4 +70,4 @@ def decode(strand, strand_type, five_to_three):
     converted = convert(strand_type, prime)
     codons = extract_codons(converted)
     proteins = translate(codons)
-    return converted, proteins
+    return "".join(codons), proteins

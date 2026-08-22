@@ -38,6 +38,7 @@
     border 0.3s ease-in step-end;
   position: relative;
   z-index: 1;
+  cursor: pointer;
 }
 
 .file-input-box {
@@ -56,10 +57,6 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
 }
 
-.type-select {
-  margin: 12px;
-}
-
 .decode {
   width: 100px;
   height: 35px;
@@ -68,9 +65,100 @@
     transform 0.3s step-start,
     box-shadow 0.3s step-start,
     border 0.3s ease-in step-end;
+  cursor: pointer;
 }
 
 .decode:hover {
   transform: translateY(-5px) translateX(5px) scale(1.03);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.decode:disabled {
+  width: 120px;
+  color: white;
+  cursor: not-allowed;
+  background-color: gray;
+  transform: none;
+  box-shadow: none;
+}
+
+.type-select {
+  margin: 12px;
+  width: 180px;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 2px solid gray;
+  border-radius: 8px;
+  background-color: lightgray;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  color: black;
+}
+
+.type-select:focus {
+  outline: none;
+  border: 2px dashed gray;
+}
+
+.type-select:hover {
+  border-color: black;
+}
+
+.results {
+  margin: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.result-output {
+  margin: 10px;
+  width: 250px;
+  height: 125px;
+}
+
+.result-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.orientation {
+  margin-top: 12px;
+}
+
+.orientation-select {
+  margin: 7px;
+  appearance: none;
+  padding-top: 3px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  background-color: #fff;
+}
+
+.orientation-select:checked {
+  background-color: #1ab359;
+  border-color: #2ecc71;
+}
+
+.orientation-select::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+}
+
+.orientation-select-label {
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.orientation-select-label:hover {
+  color: white;
 }

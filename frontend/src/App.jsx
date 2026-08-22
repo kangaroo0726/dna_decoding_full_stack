@@ -13,7 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   async function decodeDna() {
-    setConverted("decoding");
+    setConverted("");
     setProteins("");
     setLoading(true);
     const requestObject = { "strand": strand, 
