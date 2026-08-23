@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-origins = ["http://localhost:5173", "https://dna-decoding-full-stack.vercel.app/"]
+origins = ["http://localhost:5173", "https://dna-decoding-full-stack-dzq6ushlw-kangaroo0726s-projects.vercel.app/"]
 
 app.add_middleware(
     CORSMiddleware,
