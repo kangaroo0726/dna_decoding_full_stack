@@ -1,9 +1,9 @@
 import "../App.css"
 
-export function DecodeButton(props) {
+export function DecodeButton({ loading, decodeDna }) {
   return (
     <div className="decode-button">
-      <button className="decode" disabled={ props.loading } onClick={ props.decodeDna }>{ props.loading ? "Decoding..." : "Decode"}</button>
+      <button className="decode" disabled={ loading } onClick={ decodeDna }>{ loading ? "Decoding..." : "Decode"}</button>
     </div>
   );
 }
