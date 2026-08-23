@@ -20,7 +20,7 @@ function App() {
                             "strand_type": strandType, 
                             "five_to_three": fiveToThree }
     try {
-      const response = await fetch("https://dna-decoding-full-stack-dzq6ushlw-kangaroo0726s-projects.vercel.app/", { method: "POST", 
+      const response = await fetch("https://dna-decoder-api.onrender.com/decode", { method: "POST", 
                                                                       headers: { "Content-Type": "application/json" }, 
                                                                       body: JSON.stringify(requestObject) })
       if (!response.ok) {
