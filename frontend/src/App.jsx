@@ -20,7 +20,7 @@ function App() {
                             "strand_type": strandType, 
                             "five_to_three": fiveToThree }
     try {
-      const response = await fetch("http://127.0.0.1:8000/decode", { method: "POST", 
+      const response = await fetch("https://dna-decoding-full-stack.vercel.app/", { method: "POST", 
                                                                       headers: { "Content-Type": "application/json" }, 
                                                                       body: JSON.stringify(requestObject) })
       if (!response.ok) {
