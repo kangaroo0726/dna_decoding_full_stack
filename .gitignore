@@ -2,5 +2,5 @@ tests/example_text.txt
 decoder/__pycache__/
 __pycache__/
 .venv/
-dna_template_100k.txt
-dna_template_1m.txt
+tests/generate_strands.py
+tests/*.txt

@@ -27,17 +27,19 @@ function App() {
         const errorData = await response.json();
         setConverted(errorData.detail);
         setProteins(errorData.detail);
-        throw new Error(`HTTP Error Status: ${response.status}`)
+        return;
       }
 
       const data = await response.json();
       setConverted(data.converted);
       setProteins(data.proteins.join(", "))
 
-    } catch (error) {
-      console.log(`Fetch failed: ${error}`)
+    } catch {
+      setConverted("Unable to connect to the server.");
+      setProteins("Unable to connect to the server.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
