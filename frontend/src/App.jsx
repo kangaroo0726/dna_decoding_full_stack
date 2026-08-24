@@ -20,7 +20,7 @@ function App() {
                             "strand_type": strandType, 
                             "five_to_three": fiveToThree }
     try {
-      const response = await fetch("https://dna-decoder-api.onrender.com/decode", { method: "POST", 
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/decode`, { method: "POST", 
                                                                       headers: { "Content-Type": "application/json" }, 
                                                                       body: JSON.stringify(requestObject) })
       if (!response.ok) {
