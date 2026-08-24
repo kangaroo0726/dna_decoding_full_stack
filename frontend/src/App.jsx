@@ -26,6 +26,7 @@ function App() {
       if (!response.ok) {
         const errorData = await response.json();
         setConverted(errorData.detail);
+        setProteins(errorData.detail);
         throw new Error(`HTTP Error Status: ${response.status}`)
       }
 
@@ -35,7 +36,6 @@ function App() {
 
     } catch (error) {
       console.log(`Fetch failed: ${error}`)
-      setProteins("");
     }
     setLoading(false);
   }
