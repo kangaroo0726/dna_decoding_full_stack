@@ -198,7 +198,7 @@ The backend CORS configuration permits requests from both the local Vite develop
 
 ## Testing
 
-The current testing materials are stored in the `tests/` directory. They include example text inputs, a repeated DNA sequence for generating larger inputs, and template DNA files containing 100,000 and 1,000,000 bases. These files support manual testing of sequence input, file upload, decoding behavior, and handling of larger sequences.
+The current testing materials are stored in the `tests/` directory. They include template DNA files containing 100,000 and 1,000,000 bases. These files support manual testing of sequence input, file upload, decoding behavior, and handling of larger sequences.
 
 Automated unit and frontend tests have not yet been added. Automated coverage for the decoder functions and the `/decode` endpoint is planned for a future development stage.
 
