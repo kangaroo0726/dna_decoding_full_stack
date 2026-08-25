@@ -87,9 +87,6 @@ Deployment
 |       |-- index.css
 |       `-- main.jsx
 |-- tests/
-|   |-- example_text.txt
-|   |-- generate_strands.py
-|   |-- new_test.txt
 |   |-- dna_template_100k.txt
 |   `-- dna_template_1m.txt
 |-- requirements.txt
