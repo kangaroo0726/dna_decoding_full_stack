@@ -99,7 +99,7 @@ Deployment
 - `frontend/src/App.jsx` coordinates input state, API requests, loading feedback, and result rendering.
 - `frontend/src/components/` contains the sequence input, decode button, and output components.
 - `frontend/src/App.css` and `frontend/src/index.css` define the frontend styling.
-- `tests/` contains sample sequences, text inputs, and utilities for generating larger test strands.
+- `tests/` contains sample sequences and text inputs.
 - `requirements.txt` lists the Python dependencies required by the backend.
 
 ## Local Development
