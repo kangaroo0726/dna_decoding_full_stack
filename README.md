@@ -1,32 +1,241 @@
-# dna_decoding
-Decodes DNA/mRNA strand and outputs amino acids with respect to their specific codons
+# DNA Decoder
 
----
+DNA Decoder is a full-stack web application that converts DNA and mRNA sequences into mRNA codons and translated proteins.
+
+## Live Demo
+
+Click [here](https://dna-decoding-full-stack.vercel.app/ "DNA Decoder")
+
+Note: The backend may take longer than usual to respond to the first request after a period of inactivity due to a cold start. Subsequent requests should respond normally.
 
 ## Overview
-This project is meant done with the following constraints:
-- No external libraries to be used in main.py
-- All ideas and applications in this project must come from high school concepts
 
----
+This project started during my final year of high school, when I wanted to code a DNA decoder to help me with a biology assignment. After building the initial decoder, I kept expanding on the idea and improving how it worked. What began as a simple command-line tool eventually grew into a full-stack application with a React frontend and a FastAPI backend, making DNA decoding more accessible through a web interface.
 
-## The technical aspect of DNA transcription:
-- mRNA is always read from the 5' to 3' end
-- When you've got a template strand, the first step is to convert the template strand to a coding strand by reversing the template strand
-- To convert the coding strand to mRNA, exchange each thymine (T) for a uracil (U)
-- To start decoding the mRNA strand, you must locate the 'AUG' codon (mapped to methionine), which acts as the start to the sequence of proteins you are decoding for
-- The mRNA strand must be traversed in groups of 3 amino acids until it either runs out (indicating a continuing protein sequence) or until it hits one of the "UGA", "UAG", or "UAA" codons, the stop codons preventing further decoding
-- In main.py, all proteins are mapped to a specific codon
-- A single protein may be mapped to multiple codons
+## Features
 
----
+- Decode DNA and mRNA sequences through a simple web interface.
+- Support template DNA, coding DNA, and mRNA input formats.
+- Convert template DNA to its complementary mRNA sequence.
+- Convert coding DNA into mRNA by replacing thymine (`T`) with uracil (`U`).
+- Handle sequence orientation by allowing input to be interpreted in either its current direction or from 5' to 3'.
+- Search for the start codon (`AUG`) and extract codons until a stop codon is reached.
+- Translate extracted mRNA codons into their corresponding protein names.
+- Accept sequences entered directly into the text area or loaded from `.txt` files.
+- Display the converted mRNA/codon sequence and translated proteins separately.
+- Provide loading feedback while the frontend communicates with the backend.
+- Report malformed sequences, invalid strand types, missing start codons, and connection failures to the user.
 
-## Testing:
-main.py imports a testing file, create_random_strands.py. The testing script allows for a file to be generated and written to in order to test the functionality of main.py randomly generated strands (mRNA, coding or template). The user is asked for five_to_three and type_strand input every time a new line in the file is reached in order to test efficiently during a single run of the scripts.
+## Architecture
 
----
+### React frontend --> FastAPI REST API --> DNA decoder
 
-## How to run:
-1. Download the repository
-2. Make sure main.py and create_random_strands.py are in the same directory
-3. Run main.py through an IDE or python main.py in terminal
+The React frontend provides the input form, strand-type and orientation controls, file upload, loading state, and result display. When the user selects **Decode**, it sends the sequence and decoding options to the backend as a JSON request.
+
+The FastAPI backend exposes the `/decode` endpoint. It validates the request with Pydantic, passes the data to the decoder, and returns the converted sequence and translated proteins as JSON. Invalid input is returned to the frontend as an informative HTTP error.
+
+The Python DNA decoder contains the core biological and algorithmic logic. It applies the requested orientation, converts the selected strand type into mRNA, finds the reading frame from the start codon to a stop codon, and translates the resulting codons into protein names.
+
+## Tech Stack
+
+Frontend
+
+- React
+- JavaScript
+- CSS
+
+Backend
+
+- Python
+- FastAPI
+- Pydantic
+
+Deployment
+
+- Vercel
+- Render
+
+## How It Works
+
+- mRNA is interpreted in the 5' to 3' direction. If the input is not provided in that orientation, the sequence is reversed before processing.
+- Template DNA is reversed and converted using complementary base pairing to produce an mRNA sequence.
+- Coding DNA is converted to mRNA by replacing each thymine (`T`) with uracil (`U`). Existing mRNA sequences are processed without base conversion.
+- Translation begins at the first start codon, `AUG`, which corresponds to methionine.
+- After the start codon is located, the mRNA sequence is read in groups of three nucleotides, known as codons.
+- Translation continues until a stop codon (`UGA`, `UAG`, or `UAA`) is encountered or the sequence contains no further complete codons.
+- Each codon is matched to its corresponding protein using the genetic code defined in `decoder/constants.py`.
+- Multiple codons may correspond to the same protein, reflecting the redundancy of the genetic code.
+
+## Project Structure
+
+```text
+.
+|-- api/
+|   `-- main.py
+|-- decoder/
+|   |-- constants.py
+|   `-- decoder.py
+|-- frontend/
+|   |-- public/
+|   `-- src/
+|       |-- components/
+|       |   |-- DecodeButton.jsx
+|       |   |-- DnaInput.jsx
+|       |   `-- Results.jsx
+|       |-- App.css
+|       |-- App.jsx
+|       |-- index.css
+|       `-- main.jsx
+|-- tests/
+|   |-- example_text.txt
+|   |-- generate_strands.py
+|   |-- new_test.txt
+|   |-- dna_template_100k.txt
+|   `-- dna_template_1m.txt
+|-- requirements.txt
+`-- README.md
+```
+
+- `api/main.py` defines the FastAPI application, CORS configuration, request model, and `/decode` endpoint.
+- `decoder/decoder.py` implements strand orientation, DNA-to-mRNA conversion, codon extraction, and protein translation.
+- `decoder/constants.py` contains nucleotide rules, codon mappings, start and stop codons, and supported strand types.
+- `frontend/src/App.jsx` coordinates input state, API requests, loading feedback, and result rendering.
+- `frontend/src/components/` contains the sequence input, decode button, and output components.
+- `frontend/src/App.css` and `frontend/src/index.css` define the frontend styling.
+- `tests/` contains sample sequences, text inputs, and utilities for generating larger test strands.
+- `requirements.txt` lists the Python dependencies required by the backend.
+
+## Local Development
+
+### Backend
+
+From the project root, create and activate a virtual environment, then install the Python dependencies:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+On Windows PowerShell, activate the environment with:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Start the FastAPI development server from the project root:
+
+```bash
+uvicorn api.main:app --reload
+```
+
+The backend is then available at `http://localhost:8000`.
+
+### Frontend
+
+In a separate terminal, install the frontend dependencies and start the Vite development server:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend is then available at `http://localhost:5173`.
+
+### Environment Variable
+
+Create a file named `.env` inside the `frontend/` directory with the backend URL:
+
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+The Vite development server must be restarted after changes to environment variables. The local frontend origin is already permitted by the backend CORS configuration.
+
+## API
+
+### `POST /decode`
+
+Decodes a DNA or mRNA strand and translates the resulting codons into proteins.
+
+#### Request
+
+The request body must be a JSON object containing the following fields:
+
+```json
+{
+  "strand": "AUGCCCUAA",
+  "strand_type": "mrna",
+  "five_to_three": true
+}
+```
+
+- `strand`: The DNA or mRNA sequence to decode.
+- `strand_type`: The input type: `template`, `coding`, or `mrna`.
+- `five_to_three`: A Boolean indicating whether the input is already oriented 5' to 3'.
+
+#### Successful Response
+
+```json
+{
+  "converted": "AUGCCCUAA",
+  "proteins": ["methionine", "proline", "stop"]
+}
+```
+
+- `converted`: The resulting mRNA sequence after strand conversion and codon extraction.
+- `proteins`: The translated protein names in sequence order. The terminating stop codon is included as `stop`.
+
+Malformed sequences, invalid strand types, and sequences without a start codon return a `400 Bad Request` response with an explanatory `detail` message. Requests that omit required fields are rejected by FastAPI with a `422 Unprocessable Entity` response.
+
+Interactive API documentation is available at `http://localhost:8000/docs` when the backend is running.
+
+## Deployment
+
+The application is deployed as two separate services. The React frontend is built with Vite and hosted on Vercel at [dna-decoding-full-stack.vercel.app](https://dna-decoding-full-stack.vercel.app/). The FastAPI backend is hosted separately on Render and provides the `/decode` endpoint.
+
+The production frontend uses the `VITE_API_URL` environment variable to locate the deployed Render API. When a decode request is submitted, the browser sends the sequence data from the Vercel frontend to the backend on Render, which performs the decoding and returns the results as JSON.
+
+The backend CORS configuration permits requests from both the local Vite development server and the deployed Vercel frontend. The Render service may take longer to respond to its first request after inactivity because of a cold start.
+
+## Testing
+
+The current testing materials are stored in the `tests/` directory. They include example text inputs, a repeated DNA sequence for generating larger inputs, and template DNA files containing 100,000 and 1,000,000 bases. These files support manual testing of sequence input, file upload, decoding behavior, and handling of larger sequences.
+
+Automated unit and frontend tests have not yet been added. Automated coverage for the decoder functions and the `/decode` endpoint is planned for a future development stage.
+
+## Development Progress
+
+### Stage 1: Core Application and Documentation (Complete)
+
+Stage 1 established the working DNA decoding application and its supporting documentation. The original command-line decoder was expanded into a full-stack system with a React and Vite frontend, a FastAPI backend, and a Python decoding layer.
+
+- Implemented support for template DNA, coding DNA, and mRNA sequences.
+- Added strand orientation handling, complementary-base conversion, mRNA conversion, codon extraction, and protein translation.
+- Added a web interface with direct text entry, `.txt` file upload, strand-type selection, orientation controls, loading feedback, and separate result displays.
+- Added the `POST /decode` API endpoint with Pydantic request validation, JSON responses, CORS configuration, and client-error handling.
+- Added manual test inputs, generated large DNA fixtures, and documentation for the project overview, features, architecture, workflow, project structure, local development, API, deployment, and current testing status.
+- Deployed the frontend to Vercel and the backend to Render, with environment-based API configuration.
+
+### Stage 2: Engineering Quality
+
+Stage 2 will strengthen the application's reliability, maintainability, and test coverage.
+
+- **Testing:** Introduce unit tests for the decoder, API tests for `POST /decode`, and targeted frontend tests. Coverage will include invalid input, error responses, boundary conditions, and unusually large sequences.
+- **Validation and error handling:** Add appropriate request validation at the Pydantic and API layers while retaining decoder-level checks. Error responses will distinguish expected client errors from unexpected server failures and use consistent user-facing messages.
+- **Continuous integration and delivery:** Configure GitHub Actions to run automated checks and prevent changes that fail validation from being merged or deployed.
+- **Code quality:** Improve naming and documentation, reduce duplication, and refine the architecture where necessary.
+- **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
+- **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
+
+The intended outcome is a more dependable application supported by repeatable quality checks.
+
+### Stage 3: Users and Persistence
+
+Stage 3 will introduce persistence and account management, transforming the public decoder into a multi-user application.
+
+- **Data persistence:** Add PostgreSQL support for user accounts, saved DNA/RNA sequences, and decoding history.
+- **Account management:** Implement registration, login, logout, password hashing, authentication, authorization, and user profiles.
+- **Access control:** Add protected frontend routes and API endpoints, ensuring that user-specific data is accessible only to its owner.
+- **Security:** Apply secure session and authentication practices together with appropriate protections for public API endpoints.

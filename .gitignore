@@ -3,4 +3,4 @@ decoder/__pycache__/
 __pycache__/
 .venv/
 tests/generate_strands.py
-tests/*.txt
+tests/new_test.txt
