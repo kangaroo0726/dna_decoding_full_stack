@@ -7,7 +7,6 @@ def five_three(answer, strand):
 
 
 def convert(type_strand, strand):
-    strand = strand.upper()
     if type_strand == MRNA:
         for char in strand:
             if char not in MRNA_BASES:
@@ -67,6 +66,7 @@ def translate(strand):
 
 
 def decode(strand, strand_type, five_to_three):
+    strand = strand.upper()
     prime = five_three(five_to_three, strand)
     converted = convert(strand_type, prime)
     codons = extract_codons(converted)
