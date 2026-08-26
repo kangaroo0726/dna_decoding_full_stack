@@ -7,6 +7,7 @@ def five_three(answer, strand):
 
 
 def convert(type_strand, strand):
+    strand = strand.upper()
     if type_strand == MRNA:
         for char in strand:
             if char not in MRNA_BASES:
