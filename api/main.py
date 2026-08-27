@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from decoder.decoder import decode
 from pydantic import BaseModel
+from typing import Literal
 
 app = FastAPI()
 
@@ -17,7 +18,7 @@ app.add_middleware(
 
 class DecodeRequest(BaseModel):
     strand: str
-    strand_type: str
+    strand_type: Literal["mrna", "coding", "template"]
     five_to_three: bool
 
 @app.post("/decode")

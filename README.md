@@ -70,13 +70,25 @@ Deployment
 
 ```text
 .
+|-- .gitignore
 |-- api/
+|   |-- __init__.py
 |   `-- main.py
 |-- decoder/
+|   |-- __init__.py
 |   |-- constants.py
 |   `-- decoder.py
 |-- frontend/
+|   |-- .gitignore
+|   |-- eslint.config.js
+|   |-- index.html
+|   |-- package.json
+|   |-- package-lock.json
+|   |-- README.md
+|   |-- vite.config.js
 |   |-- public/
+|   |   |-- favicon.svg
+|   |   `-- icons.svg
 |   `-- src/
 |       |-- components/
 |       |   |-- DecodeButton.jsx
@@ -87,20 +99,30 @@ Deployment
 |       |-- index.css
 |       `-- main.jsx
 |-- tests/
+|   |-- __init__.py
+|   |-- constants.py
 |   |-- dna_template_100k.txt
-|   `-- dna_template_1m.txt
+|   |-- dna_template_1m.txt
+|   |-- example_text.txt
+|   |-- generate_strands.py
+|   |-- new_test.txt
+|   |-- test_api.py
+|   `-- test_decoder.py
 |-- requirements.txt
 `-- README.md
 ```
 
-- `api/main.py` defines the FastAPI application, CORS configuration, request model, and `/decode` endpoint.
+- `api/main.py` defines the FastAPI application, CORS configuration, request model, and `/decode` endpoint. `api/__init__.py` marks the API module as a package.
 - `decoder/decoder.py` implements strand orientation, DNA-to-mRNA conversion, codon extraction, and protein translation.
 - `decoder/constants.py` contains nucleotide rules, codon mappings, start and stop codons, and supported strand types.
 - `frontend/src/App.jsx` coordinates input state, API requests, loading feedback, and result rendering.
 - `frontend/src/components/` contains the sequence input, decode button, and output components.
 - `frontend/src/App.css` and `frontend/src/index.css` define the frontend styling.
-- `tests/` contains sample sequences and text inputs.
-- `requirements.txt` lists the Python dependencies required by the backend.
+- `tests/test_decoder.py` contains unit tests for the decoder functions.
+- `tests/test_api.py` contains endpoint, request-validation, and CORS tests.
+- `tests/constants.py` contains shared API test constants, while `tests/generate_strands.py` generates large test fixtures.
+- `tests/` also contains sample sequences and text inputs for manual and automated testing.
+- `requirements.txt` lists the Python backend and test dependencies.
 
 ## Local Development
 
@@ -181,10 +203,10 @@ The request body must be a JSON object containing the following fields:
 }
 ```
 
-- `converted`: The resulting mRNA sequence after strand conversion and codon extraction.
+- `converted`: The resulting mRNA sequence after strand conversion and codon extraction, up until the first stop codon.
 - `proteins`: The translated protein names in sequence order. The terminating stop codon is included as `stop`.
 
-Malformed sequences, invalid strand types, and sequences without a start codon return a `400 Bad Request` response with an explanatory `detail` message. Requests that omit required fields are rejected by FastAPI with a `422 Unprocessable Entity` response.
+Malformed sequences and sequences without a start codon return a `400 Bad Request` response with an explanatory `detail` message. Unsupported strand types, invalid field types, and requests that omit required fields are rejected by FastAPI with a `422 Unprocessable Entity` response.
 
 Interactive API documentation is available at `http://localhost:8000/docs` when the backend is running.
 
@@ -198,9 +220,21 @@ The backend CORS configuration permits requests from both the local Vite develop
 
 ## Testing
 
-The current testing materials are stored in the `tests/` directory. They include template DNA files containing 100,000 and 1,000,000 bases. These files support manual testing of sequence input, file upload, decoding behavior, and handling of larger sequences.
+The automated test suite is stored in the `tests/` directory. It includes decoder unit tests and API tests for the `/decode` endpoint. Coverage includes valid strand types, orientation, malformed input, missing start codons, translation boundaries, request validation, and CORS behavior.
 
-Automated unit and frontend tests have not yet been added. Automated coverage for the decoder functions and the `/decode` endpoint is planned for a future development stage.
+The directory also contains template DNA files containing 100,000 and 1,000,000 bases. These support manual testing of sequence input, file upload, decoding behavior, and larger sequences.
+
+Run the backend test suite from the project root with:
+
+```bash
+python -m pytest
+```
+
+Or simply:
+
+```bash
+pytest
+```
 
 ## Development Progress
 
@@ -208,23 +242,24 @@ Automated unit and frontend tests have not yet been added. Automated coverage fo
 
 Stage 1 established the working DNA decoding application and its supporting documentation. The original command-line decoder was expanded into a full-stack system with a React and Vite frontend, a FastAPI backend, and a Python decoding layer.
 
-- Implemented support for template DNA, coding DNA, and mRNA sequences.
-- Added strand orientation handling, complementary-base conversion, mRNA conversion, codon extraction, and protein translation.
-- Added a web interface with direct text entry, `.txt` file upload, strand-type selection, orientation controls, loading feedback, and separate result displays.
-- Added the `POST /decode` API endpoint with Pydantic request validation, JSON responses, CORS configuration, and client-error handling.
-- Added manual test inputs, generated large DNA fixtures, and documentation for the project overview, features, architecture, workflow, project structure, local development, API, deployment, and current testing status.
-- Deployed the frontend to Vercel and the backend to Render, with environment-based API configuration.
+- [x] Implemented support for template DNA, coding DNA, and mRNA sequences.
+- [x] Added strand orientation handling, complementary-base conversion, mRNA conversion, codon extraction, and protein translation.
+- [x] Added a web interface with direct text entry, `.txt` file upload, strand-type selection, orientation controls, loading feedback, and separate result displays.
+- [x] Added the `POST /decode` API endpoint with Pydantic request validation, JSON responses, CORS configuration, and client-error handling.
+- [x] Added manual test inputs, generated large DNA fixtures, and documentation for the project overview, features, architecture, workflow, project structure, local development, API, deployment, and current testing status.
+- [x] Deployed the frontend to Vercel and the backend to Render, with environment-based API configuration.
 
-### Stage 2: Engineering Quality
+### Stage 2: Engineering Quality (In Progress)
 
 Stage 2 will strengthen the application's reliability, maintainability, and test coverage.
 
-- **Testing:** Introduce unit tests for the decoder, API tests for `POST /decode`, and targeted frontend tests. Coverage will include invalid input, error responses, boundary conditions, and unusually large sequences.
-- **Validation and error handling:** Add appropriate request validation at the Pydantic and API layers while retaining decoder-level checks. Error responses will distinguish expected client errors from unexpected server failures and use consistent user-facing messages.
-- **Continuous integration and delivery:** Configure GitHub Actions to run automated checks and prevent changes that fail validation from being merged or deployed.
-- **Code quality:** Improve naming and documentation, reduce duplication, and refine the architecture where necessary.
-- **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
-- **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
+- [x] **Testing:** Added decoder unit tests and API tests for `POST /decode`, including invalid input, error responses, boundary conditions, request validation, and CORS behavior.
+- [ ] **Frontend testing:** Add targeted tests for the React components and user workflows.
+- [x] **Validation and error handling:** Added request validation at the Pydantic and API layers while retaining decoder-level checks. Expected client errors are returned as consistent `400` or `422` responses.
+- [ ] **Continuous integration and delivery:** Configure GitHub Actions to run automated checks and prevent changes that fail validation from being merged or deployed.
+- [ ] **Code quality:** Improve naming and documentation, reduce duplication, and refine the architecture where necessary.
+- [ ] **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
+- [ ] **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
 
 The intended outcome is a more dependable application supported by repeatable quality checks.
 
@@ -232,7 +267,7 @@ The intended outcome is a more dependable application supported by repeatable qu
 
 Stage 3 will introduce persistence and account management, transforming the public decoder into a multi-user application.
 
-- **Data persistence:** Add PostgreSQL support for user accounts, saved DNA/RNA sequences, and decoding history.
-- **Account management:** Implement registration, login, logout, password hashing, authentication, authorization, and user profiles.
-- **Access control:** Add protected frontend routes and API endpoints, ensuring that user-specific data is accessible only to its owner.
-- **Security:** Apply secure session and authentication practices together with appropriate protections for public API endpoints.
+- [ ] **Data persistence:** Add PostgreSQL support for user accounts, saved DNA/RNA sequences, and decoding history.
+- [ ] **Account management:** Implement registration, login, logout, password hashing, authentication, authorization, and user profiles.
+- [ ] **Access control:** Add protected frontend routes and API endpoints, ensuring that user-specific data is accessible only to its owner.
+- [ ] **Security:** Apply secure session and authentication practices together with appropriate protections for public API endpoints.

@@ -54,7 +54,9 @@ def translate(strand):
     proteins = []
     if strand:
         for sequence in strand:
-            protein = protein_dict[sequence]
+            protein = protein_dict.get(sequence)
+            if protein is None:
+                raise ValueError(f"Malformed Strand: {sequence} not valid")
             proteins.append(protein)
             if protein == "stop":
                 break
