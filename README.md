@@ -4,7 +4,7 @@ DNA Decoder is a full-stack web application that converts DNA and mRNA sequences
 
 ## Live Demo
 
-Click [here](https://dna-decoding-full-stack.vercel.app/ "DNA Decoder")
+Click [here](https://dna-decoding-full-stack.vercel.app/ "DNA Decoder").
 
 Note: The backend may take longer than usual to respond to the first request after a period of inactivity due to a cold start. Subsequent requests should respond normally.
 
@@ -103,9 +103,6 @@ Deployment
 |   |-- constants.py
 |   |-- dna_template_100k.txt
 |   |-- dna_template_1m.txt
-|   |-- example_text.txt
-|   |-- generate_strands.py
-|   |-- new_test.txt
 |   |-- test_api.py
 |   `-- test_decoder.py
 |-- requirements.txt
@@ -120,8 +117,8 @@ Deployment
 - `frontend/src/App.css` and `frontend/src/index.css` define the frontend styling.
 - `tests/test_decoder.py` contains unit tests for the decoder functions.
 - `tests/test_api.py` contains endpoint, request-validation, and CORS tests.
-- `tests/constants.py` contains shared API test constants, while `tests/generate_strands.py` generates large test fixtures.
-- `tests/` also contains sample sequences and text inputs for manual and automated testing.
+- `tests/constants.py` contains shared API test constants.
+- `tests/` also contains tracked large DNA fixtures for manual testing and automated test data.
 - `requirements.txt` lists the Python backend and test dependencies.
 
 ## Local Development
