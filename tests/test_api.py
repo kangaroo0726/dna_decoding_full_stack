@@ -322,7 +322,7 @@ def test_decode_endpoint(request_data, expected_status, expected_response):
     assert response.status_code == expected_status
     assert response.json() == expected_response
 
-@pytest.mark.parametrize(
+cors_tests = pytest.mark.parametrize(
         "origin", 
         [
             "http://localhost:5173",
@@ -330,6 +330,7 @@ def test_decode_endpoint(request_data, expected_status, expected_response):
         ]
 )
 
+@cors_tests
 def test_cors_allows_frontend_origin(origin):
     response = client.post(
         ENDPOINT,
@@ -343,6 +344,21 @@ def test_cors_allows_frontend_origin(origin):
 
     assert response.headers["access-control-allow-origin"] == origin
 
+@cors_tests
+def test_cors_preflight(origin):
+    response = client.options(
+        ENDPOINT,
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == origin
+    assert "POST" in response.headers["access-control-allow-methods"]
+
 def test_cors_rejects_unallowed_origin():
     response = client.post(
         ENDPOINT,
@@ -355,17 +371,3 @@ def test_cors_rejects_unallowed_origin():
     )
 
     assert "access-control-allow-origin" not in response.headers
-
-def test_cors_preflight():
-    response = client.options(
-        ENDPOINT,
-        headers={
-            "Origin": "http://localhost:5173",
-            "Access-Control-Request-Method": "POST",
-            "Access-Control-Request-Headers": "content-type",
-        },
-    )
-
-    assert response.status_code == 200
-    assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
-    assert "POST" in response.headers["access-control-allow-methods"]
