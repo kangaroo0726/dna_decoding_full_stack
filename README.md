@@ -249,7 +249,7 @@ Run the backend test suite from the project root with:
 python -m pytest
 ```
 
-Or, in an activated environment, simply:
+Or in an activated environment:
 
 ```bash
 pytest
