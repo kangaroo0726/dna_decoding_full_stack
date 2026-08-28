@@ -326,7 +326,7 @@ cors_tests = pytest.mark.parametrize(
         "origin", 
         [
             "http://localhost:5173",
-            "https://dna-decoding-full-stack.vercel.app//"
+            "https://dna-decoding-full-stack.vercel.app/"
         ]
 )
 
