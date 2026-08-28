@@ -43,6 +43,9 @@ Frontend
 - React
 - JavaScript
 - CSS
+- Vite
+- Vitest
+- React Testing Library
 
 Backend
 
@@ -94,6 +97,16 @@ Deployment
 |       |   |-- DecodeButton.jsx
 |       |   |-- DnaInput.jsx
 |       |   `-- Results.jsx
+|       |-- assets/
+|       |   |-- hero.png
+|       |   |-- react.svg
+|       |   `-- vite.svg
+|       |-- tests/
+|       |   |-- App.test.jsx
+|       |   |-- DecodeButton.test.jsx
+|       |   |-- DnaInput.test.jsx
+|       |   |-- Results.test.jsx
+|       |   `-- setup.js
 |       |-- App.css
 |       |-- App.jsx
 |       |-- index.css
@@ -114,6 +127,7 @@ Deployment
 - `decoder/constants.py` contains nucleotide rules, codon mappings, start and stop codons, and supported strand types.
 - `frontend/src/App.jsx` coordinates input state, API requests, loading feedback, and result rendering.
 - `frontend/src/components/` contains the sequence input, decode button, and output components.
+- `frontend/src/tests/` contains component and workflow tests, with `setup.js` configuring jsdom and Testing Library matchers.
 - `frontend/src/App.css` and `frontend/src/index.css` define the frontend styling.
 - `tests/test_decoder.py` contains unit tests for the decoder functions.
 - `tests/test_api.py` contains endpoint, request-validation, and CORS tests.
@@ -217,7 +231,9 @@ The backend CORS configuration permits requests from both the local Vite develop
 
 ## Testing
 
-The automated test suite is stored in the `tests/` directory. It includes decoder unit tests and API tests for the `/decode` endpoint. Coverage includes valid strand types, orientation, malformed input, missing start codons, translation boundaries, request validation, and CORS behavior.
+The project has separate backend and frontend test suites. The backend suite is stored in `tests/` and includes decoder unit tests and API tests for the `/decode` endpoint. Coverage includes valid strand types, orientation, malformed input, missing start codons, translation boundaries, request validation, and CORS behavior.
+
+The frontend suite is stored in `frontend/src/tests/` and uses Vitest, jsdom, React Testing Library, and `user-event`. It covers the app shell, successful decoding, API errors, connection failures, loading and disabled-button behavior, sequence input controls, the decode button, and result rendering.
 
 The directory also contains template DNA files containing 100,000 and 1,000,000 bases. These support manual testing of sequence input, file upload, decoding behavior, and larger sequences.
 
@@ -232,6 +248,16 @@ Or simply:
 ```bash
 pytest
 ```
+
+Run the frontend tests and lint checks from `frontend/`:
+
+```bash
+npm test -- --run
+npm run lint
+npm run build
+```
+
+The current verified frontend status is 12 passing tests across 4 test files, with linting and the production build passing. Backend tests require the dependencies in `requirements.txt` to be installed in the active Python environment.
 
 ## Development Progress
 
@@ -251,7 +277,7 @@ Stage 1 established the working DNA decoding application and its supporting docu
 Stage 2 will strengthen the application's reliability, maintainability, and test coverage.
 
 - [x] **Testing:** Added decoder unit tests and API tests for `POST /decode`, including invalid input, error responses, boundary conditions, request validation, and CORS behavior.
-- [ ] **Frontend testing:** Add targeted tests for the React components and user workflows.
+- [x] **Frontend testing:** Added component and workflow tests for rendering, input controls, successful decoding, API errors, connection failures, loading feedback, disabled-button behavior, and result rendering. The current frontend suite has 12 passing tests across 4 files.
 - [x] **Validation and error handling:** Added request validation at the Pydantic and API layers while retaining decoder-level checks. Expected client errors are returned as consistent `400` or `422` responses.
 - [ ] **Continuous integration and delivery:** Configure GitHub Actions to run automated checks and prevent changes that fail validation from being merged or deployed.
 - [ ] **Code quality:** Improve naming and documentation, reduce duplication, and refine the architecture where necessary.

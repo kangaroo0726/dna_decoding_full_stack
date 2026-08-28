@@ -355,7 +355,7 @@ def test_cors_preflight(origin):
         },
     )
 
-    assert response.status_code == 200
+    assert response.status_code == STATUS_CODE_OK
     assert response.headers["access-control-allow-origin"] == origin
     assert "POST" in response.headers["access-control-allow-methods"]
 
