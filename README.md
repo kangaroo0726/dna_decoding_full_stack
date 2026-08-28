@@ -74,6 +74,9 @@ Deployment
 ```text
 .
 |-- .gitignore
+|-- .github/
+|   `-- workflows/
+|       `-- tests.yml
 |-- api/
 |   |-- __init__.py
 |   `-- main.py
@@ -259,6 +262,8 @@ npm run build
 
 The current verified frontend status is 12 passing tests across 4 test files, with linting and the production build passing. Backend tests require the dependencies in `requirements.txt` to be installed in the active Python environment.
 
+GitHub Actions runs the backend and frontend checks on every push and pull request. The workflow uses Python 3.14 and Node.js 22, installs each project's dependencies, runs `pytest` for the backend, and runs the frontend test and lint commands.
+
 ## Development Progress
 
 ### Stage 1: Core Application and Documentation (Complete)
@@ -279,7 +284,7 @@ Stage 2 will strengthen the application's reliability, maintainability, and test
 - [x] **Testing:** Added decoder unit tests and API tests for `POST /decode`, including invalid input, error responses, boundary conditions, request validation, and CORS behavior.
 - [x] **Frontend testing:** Added component and workflow tests for rendering, input controls, successful decoding, API errors, connection failures, loading feedback, disabled-button behavior, and result rendering. The current frontend suite has 12 passing tests across 4 files.
 - [x] **Validation and error handling:** Added request validation at the Pydantic and API layers while retaining decoder-level checks. Expected client errors are returned as consistent `400` or `422` responses.
-- [ ] **Continuous integration and delivery:** Configure GitHub Actions to run automated checks and prevent changes that fail validation from being merged or deployed.
+- [x] **Continuous integration:** Added GitHub Actions workflow checks for backend tests, frontend tests, and frontend linting on every push and pull request.
 - [ ] **Code quality:** Improve naming and documentation, reduce duplication, and refine the architecture where necessary.
 - [ ] **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
 - [ ] **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
