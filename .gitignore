@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 tests/generate_strands.py
 tests/new_test.txt
+frontend/.env

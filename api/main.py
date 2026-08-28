@@ -16,13 +16,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class DecodeRequest(BaseModel):
+    """Payload accepted by the DNA decoding endpoint."""
+
     strand: str
     strand_type: Literal["mrna", "coding", "template"]
     five_to_three: bool
 
+
 @app.post("/decode")
 def decode_dna(request: DecodeRequest):
+    """Decode a strand and return its converted codons and proteins."""
     try:
         converted, proteins = decode(request.strand, request.strand_type, request.five_to_three)
         return {"converted": converted, "proteins": proteins}

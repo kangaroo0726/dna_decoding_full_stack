@@ -86,6 +86,7 @@ Deployment
 |   `-- decoder.py
 |-- frontend/
 |   |-- .gitignore
+|   |-- .env.example
 |   |-- eslint.config.js
 |   |-- index.html
 |   |-- package.json
@@ -124,6 +125,8 @@ Deployment
 |-- requirements.txt
 `-- README.md
 ```
+
+Ignored local and generated files are intentionally omitted from this structure. This includes `.venv/`, Python cache directories, `frontend/.env`, `frontend/node_modules/`, `frontend/dist/`, test scratch files, and generated logs.
 
 - `api/main.py` defines the FastAPI application, CORS configuration, request model, and `/decode` endpoint. `api/__init__.py` marks the API module as a package.
 - `decoder/decoder.py` implements strand orientation, DNA-to-mRNA conversion, codon extraction, and protein translation.
@@ -246,7 +249,7 @@ Run the backend test suite from the project root with:
 python -m pytest
 ```
 
-Or simply:
+Or, in an activated environment, simply:
 
 ```bash
 pytest
@@ -285,7 +288,7 @@ Stage 2 will strengthen the application's reliability, maintainability, and test
 - [x] **Frontend testing:** Added component and workflow tests for rendering, input controls, successful decoding, API errors, connection failures, loading feedback, disabled-button behavior, and result rendering. The current frontend suite has 12 passing tests across 4 files.
 - [x] **Validation and error handling:** Added request validation at the Pydantic and API layers while retaining decoder-level checks. Expected client errors are returned as consistent `400` or `422` responses.
 - [x] **Continuous integration:** Added GitHub Actions workflow checks for backend tests, frontend tests, and frontend linting on every push and pull request.
-- [ ] **Code quality:** Improve naming and documentation, reduce duplication, and refine the architecture where necessary.
+- [x] **Code quality:** Improved naming and documentation in the decoder and API layers, centralized repeated frontend result handling, and cleaned up request construction and formatting without changing behavior.
 - [ ] **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
 - [ ] **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
 
