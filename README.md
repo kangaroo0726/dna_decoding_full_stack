@@ -289,7 +289,6 @@ Stage 2 will strengthen the application's reliability, maintainability, and test
 - [x] **Validation and error handling:** Added request validation at the Pydantic and API layers while retaining decoder-level checks. Expected client errors are returned as consistent `400` or `422` responses.
 - [x] **Continuous integration:** Added GitHub Actions workflow checks for backend tests, frontend tests, and frontend linting on every push and pull request.
 - [x] **Code quality:** Improved naming and documentation in the decoder and API layers, centralized repeated frontend result handling, and cleaned up request construction and formatting without changing behavior.
-- [ ] **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
 - [ ] **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
 
 The intended outcome is a more dependable application supported by repeatable quality checks.
@@ -302,3 +301,4 @@ Stage 3 will introduce persistence and account management, transforming the publ
 - [ ] **Account management:** Implement registration, login, logout, password hashing, authentication, authorization, and user profiles.
 - [ ] **Access control:** Add protected frontend routes and API endpoints, ensuring that user-specific data is accessible only to its owner.
 - [ ] **Security:** Apply secure session and authentication practices together with appropriate protections for public API endpoints.
+- [ ] **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
