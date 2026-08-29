@@ -35,6 +35,7 @@ def measure_time_decode(strand, repetitions):
 
 
 def main():
+    print("Running decoder benchmark...")
     tests = [
         ("Small", SMALL_STRAND, NUM_REPEATED_SMALL_STRANDS),
         ("Medium", MEDIUM_STRAND, NUM_REPEATED_SMALL_STRANDS),
