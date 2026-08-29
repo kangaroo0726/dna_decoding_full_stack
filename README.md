@@ -266,14 +266,14 @@ python -m tests.benchmark_decoder > tests/benchmark_run_human_readable.txt
 Current benchmark output from the optimized path is:
 
 ```text
-Small: | 12 bases | 0.0123s | 9,760,700 bases/sec | Measured over 10000 function calls
-Medium: | 30 bases | 0.0248s | 12,080,699 bases/sec | Measured over 10000 function calls
-Large: | 92 bases | 0.0466s | 19,725,135 bases/sec | Measured over 10000 function calls
-~100K: | 100000 bases | 0.0289s | 345,974,073 bases/sec | Measured over 100 function calls
-~1M: | 1000000 bases | 0.4488s | 222,833,430 bases/sec | Measured over 100 function calls
+Small: | 12 bases | 1.6798s | 7,143,810 bases/sec | Measured over 1000000 function calls
+Medium: | 30 bases | 2.6878s | 11,161,492 bases/sec | Measured over 1000000 function calls
+Large: | 92 bases | 5.1547s | 17,847,958 bases/sec | Measured over 1000000 function calls
+~100K: | 100000 bases | 3.0643s | 326,339,859 bases/sec | Measured over 10000 function calls
+~1M: | 1000000 bases | 43.7496s | 228,573,585 bases/sec | Measured over 10000 function calls
 ```
 
-These results reflect the optimized conversion path, which replaced Python-level per-character list building with lower-overhead string translation and reduced validation overhead without changing decoder behavior or error semantics. Compared with the original implementation, the large-input path improved by approximately 8x for the 100K benchmark and approximately 9x for the 1M benchmark.
+These results reflect the optimized conversion path and the current local hardware environment. The benchmark confirms the pipeline scales well to large inputs without needing a supercomputer: the ~1M-base case processes in roughly 44 seconds in a single local run, and the ~100K case sits at roughly 3 seconds. The speedup is driven by replacing Python-heavy per-character list-building work with lower-overhead string translation and validation patterns while preserving the original decoder behavior and error semantics.
 
 ### Backend Testing
 
