@@ -1,3 +1,5 @@
+import re
+
 from .constants import (
     CODING,
     DNA_BASES,
@@ -6,9 +8,16 @@ from .constants import (
     START_CODON,
     STOP_CODONS,
     TEMPLATE,
-    COMPLEMENT_DICT,
     PROTEIN_DICT,
 )
+
+DNA_TO_MRNA_TABLE = str.maketrans({"T": "U"})
+COMPLEMENT_TABLE = str.maketrans({"T": "A", "A": "U", "G": "C", "C": "G"})
+
+MRNA_PATTERN = re.compile(r"[^AUGC]")
+CODING_PATTERN = re.compile(r"[^ATCG]")
+TEMPLATE_PATTERN = re.compile(r"[^ATCG]")
+
 
 def five_three(is_five_to_three, strand):
     """Return the strand in the requested orientation."""
@@ -17,26 +26,34 @@ def five_three(is_five_to_three, strand):
     return strand[::-1]
 
 
+def find_invalid_base(strand, pattern):
+    """Return the first invalid base in the strand, if one exists."""
+    match = pattern.search(strand)
+    if match is None:
+        return None
+    return match.group(0)
+
+
 def convert(strand_type, strand):
     """Convert a DNA or mRNA strand into an mRNA sequence."""
     if strand_type == MRNA:
-        for char in strand:
-            if char not in MRNA_BASES:
-                raise ValueError(f"Malformed Strand: {char} not valid")
+        invalid_base = find_invalid_base(strand, MRNA_PATTERN)
+        if invalid_base is not None:
+            raise ValueError(f"Malformed Strand: {invalid_base} not valid")
         return strand
-    elif strand_type == TEMPLATE:
-        converted_strand = list(strand[::-1])
-        for index, base in enumerate(converted_strand):
-            try:
-                converted_strand[index] = COMPLEMENT_DICT[base]
-            except KeyError:
-                raise ValueError(f"Malformed Strand: {base} not valid")
-        return "".join(converted_strand)
-    elif strand_type == CODING:
-        for char in strand:
-            if char not in DNA_BASES:
-                raise ValueError(f"Malformed Strand: {char} not valid")
-        return strand.replace("T", "U")
+
+    if strand_type == TEMPLATE:
+        invalid_base = find_invalid_base(strand, TEMPLATE_PATTERN)
+        if invalid_base is not None:
+            raise ValueError(f"Malformed Strand: {invalid_base} not valid")
+        return strand.translate(COMPLEMENT_TABLE)[::-1]
+
+    if strand_type == CODING:
+        invalid_base = find_invalid_base(strand, CODING_PATTERN)
+        if invalid_base is not None:
+            raise ValueError(f"Malformed Strand: {invalid_base} not valid")
+        return strand.translate(DNA_TO_MRNA_TABLE)
+
     raise ValueError(f"Invalid strand type: {strand_type}")
 
 

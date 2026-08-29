@@ -29,6 +29,8 @@ MRNA_BASES = {"A", "U", "C", "G"}
 DNA_BASES = {"A", "T", "C", "G"}
 
 COMPLEMENT_DICT = {"T": "A", "A": "U", "G": "C", "C": "G"}
+DNA_TO_MRNA_TABLE = str.maketrans({"T": "U"})
+COMPLEMENT_TABLE = str.maketrans({"T": "A", "A": "U", "G": "C", "C": "G"})
 
 MRNA = "mrna"
 CODING = "coding"
