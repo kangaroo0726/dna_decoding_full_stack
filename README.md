@@ -117,9 +117,13 @@ Deployment
 |       `-- main.jsx
 |-- tests/
 |   |-- __init__.py
+|   |-- benchmark_decoder.py
+|   |-- benchmark_run.csv
+|   |-- benchmark_run_human_readable.txt
 |   |-- constants.py
 |   |-- dna_template_100k.txt
 |   |-- dna_template_1m.txt
+|   |-- generate_strands.py
 |   |-- test_api.py
 |   `-- test_decoder.py
 |-- requirements.txt
@@ -243,6 +247,36 @@ The frontend suite is stored in `frontend/src/tests/` and uses Vitest, jsdom, Re
 
 The directory also contains template DNA files containing 100,000 and 1,000,000 bases. These support manual testing of sequence input, file upload, decoding behavior, and larger sequences.
 
+### Benchmarking
+
+The decoder includes a focused benchmarking script, `tests/benchmark_decoder.py`, to measure throughput on short, medium, large, 100K-base, and 1M-base inputs. The benchmark is designed to capture the performance of the conversion and decoding pipeline under realistic large-input workloads.
+
+Run the benchmark from the project root:
+
+```bash
+python -m tests.benchmark_decoder
+```
+
+This writes a CSV summary to `tests/benchmark_run.csv` and prints a human-readable version to the terminal. The benchmark can also be redirected to a file for record-keeping:
+
+```bash
+python -m tests.benchmark_decoder > tests/benchmark_run_human_readable.txt
+```
+
+Current benchmark output from the optimized path is:
+
+```text
+Small: | 12 bases | 0.0123s | 9,760,700 bases/sec | Measured over 10000 function calls
+Medium: | 30 bases | 0.0248s | 12,080,699 bases/sec | Measured over 10000 function calls
+Large: | 92 bases | 0.0466s | 19,725,135 bases/sec | Measured over 10000 function calls
+~100K: | 100000 bases | 0.0289s | 345,974,073 bases/sec | Measured over 100 function calls
+~1M: | 1000000 bases | 0.4488s | 222,833,430 bases/sec | Measured over 100 function calls
+```
+
+These results reflect the optimized conversion path, which replaced Python-level per-character list building with lower-overhead string translation and reduced validation overhead without changing decoder behavior or error semantics. Compared with the original implementation, the large-input path improved by approximately 8x for the 100K benchmark and approximately 9x for the 1M benchmark.
+
+### Backend Testing
+
 Run the backend test suite from the project root with:
 
 ```bash
@@ -254,6 +288,8 @@ Or in an activated environment:
 ```bash
 pytest
 ```
+
+### Frontend Testing
 
 Run the frontend tests and lint checks from `frontend/`:
 
@@ -280,18 +316,19 @@ Stage 1 established the working DNA decoding application and its supporting docu
 - [x] Added manual test inputs, generated large DNA fixtures, and documentation for the project overview, features, architecture, workflow, project structure, local development, API, deployment, and current testing status.
 - [x] Deployed the frontend to Vercel and the backend to Render, with environment-based API configuration.
 
-### Stage 2: Engineering Quality (In Progress)
+### Stage 2: Engineering Quality (Complete)
 
-Stage 2 will strengthen the application's reliability, maintainability, and test coverage.
+Stage 2 strengthened the application's reliability, maintainability, test coverage, and performance discipline.
 
 - [x] **Testing:** Added decoder unit tests and API tests for `POST /decode`, including invalid input, error responses, boundary conditions, request validation, and CORS behavior.
 - [x] **Frontend testing:** Added component and workflow tests for rendering, input controls, successful decoding, API errors, connection failures, loading feedback, disabled-button behavior, and result rendering. The current frontend suite has 12 passing tests across 4 files.
 - [x] **Validation and error handling:** Added request validation at the Pydantic and API layers while retaining decoder-level checks. Expected client errors are returned as consistent `400` or `422` responses.
 - [x] **Continuous integration:** Added GitHub Actions workflow checks for backend tests, frontend tests, and frontend linting on every push and pull request.
 - [x] **Code quality:** Improved naming and documentation in the decoder and API layers, centralized repeated frontend result handling, and cleaned up request construction and formatting without changing behavior.
-- [ ] **Performance assessment:** Establish profiling and benchmarking practices before applying optimizations, with particular attention to large-input processing.
+- [x] **Performance assessment:** Established profiling and benchmarking practices before optimization, with benchmarking focused on large-input processing and end-to-end conversion throughput.
+- [x] **Decoder optimization:** Identified the conversion hot path, replaced Python-heavy character rebuilding with faster string translation and validation patterns, and verified results on the 100K and 1M base fixtures.
 
-The intended outcome is a more dependable application supported by repeatable quality checks.
+The intended outcome is a dependable application supported by repeatable quality checks and a proven large-input performance baseline.
 
 ### Stage 3: Users and Persistence
 
