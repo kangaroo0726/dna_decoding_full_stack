@@ -249,7 +249,9 @@ The directory also contains template DNA files containing 100,000 and 1,000,000 
 
 ### Benchmarking
 
-The decoder includes a focused benchmarking script, `tests/benchmark_decoder.py`, to measure throughput on short, medium, large, 100K-base, and 1M-base inputs. The benchmark is designed to capture the performance of the conversion and decoding pipeline under realistic large-input workloads.
+The decoder includes a focused benchmarking script, `tests/benchmark_decoder.py`, to measure throughput on short, medium, large, 100K-base, and 1M-base inputs. The benchmark is designed to capture the performance of the conversion and decoding pipeline under realistic large-input workloads while keeping the measured loop focused on decoder work rather than on regenerating input data for each call.
+
+The benchmark now builds each test case once before timing begins. Each size has a generated valid mRNA strand that is reused through the repeated decode loop, which keeps the benchmark fair and avoids measuring the cost of regeneration alongside the decoder itself. The earlier redundant fixed constants and template-file reads were removed so the generated strand set is the single source of benchmark input.
 
 Run the benchmark from the project root:
 
@@ -263,17 +265,17 @@ This writes a CSV summary to `tests/benchmark_run.csv` and prints a human-readab
 python -m tests.benchmark_decoder > tests/benchmark_run_human_readable.txt
 ```
 
-Current benchmark output from the optimized path is:
+Current benchmark output from the generated-once benchmark path is:
 
 ```text
-Small: | 12 bases | 1.6798s | 7,143,810 bases/sec | Measured over 1000000 function calls
-Medium: | 30 bases | 2.6878s | 11,161,492 bases/sec | Measured over 1000000 function calls
-Large: | 92 bases | 5.1547s | 17,847,958 bases/sec | Measured over 1000000 function calls
-~100K: | 100000 bases | 3.0643s | 326,339,859 bases/sec | Measured over 10000 function calls
-~1M: | 1000000 bases | 43.7496s | 228,573,585 bases/sec | Measured over 10000 function calls
+Small: | 12 bases | 0.1768s | 6,787,726 bases/sec | Measured over 100000 function calls
+Medium: | 30 bases | 0.4144s | 7,239,181 bases/sec | Measured over 100000 function calls
+Large: | 90 bases | 1.0002s | 8,998,131 bases/sec | Measured over 100000 function calls
+~100K: | 99999 bases | 10.0577s | 9,942,563 bases/sec | Measured over 1000 function calls
+~1M: | 999999 bases | 103.8993s | 9,624,692 bases/sec | Measured over 1000 function calls
 ```
 
-These results reflect the optimized conversion path and the current local hardware environment. The benchmark confirms the pipeline scales well to large inputs without needing a supercomputer: the ~1M-base case processes in roughly 44 seconds in a single local run, and the ~100K case sits at roughly 3 seconds. The speedup is driven by replacing Python-heavy per-character list-building work with lower-overhead string translation and validation patterns while preserving the original decoder behavior and error semantics.
+These results reflect the current local hardware and the current benchmark workload: each case is fixed once before the timed loop and then repeatedly decoded. The ~100K and ~1M cases are larger and slower because they are measuring repeated full-length decode operations across substantial data volumes. The benchmark remains useful for throughput comparison, but it is best interpreted as a fixed-workload throughput test rather than a quick smoke benchmark.
 
 ### Backend Testing
 

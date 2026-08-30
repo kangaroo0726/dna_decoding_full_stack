@@ -1,61 +1,83 @@
-import time
 import csv
-from pathlib import Path
+import random
+import time
+from decoder.constants import MRNA, PROTEIN_DICT, STOP_CODONS
 from decoder.decoder import decode
-from decoder.constants import MRNA, TEMPLATE, CODING
 
-def read_strand(filename):
-    with open(filename) as file_in:
-        strand = file_in.readline().strip()
+
+def generate_valid_mrna_strand(length):
+    if length <= 3:
+        return "AUG"
+
+    valid_codons = [codon for codon, protein in PROTEIN_DICT.items() if protein != "stop"]
+    codons = ["AUG"]
+    remaining_length = max(1, (length // 3) - 1)
+    codons.extend(random.choice(valid_codons) for _ in range(remaining_length))
+    codons.append(random.choice(list(STOP_CODONS)))
+
+    strand = "".join(codons)
+    if len(strand) > length:
+        strand = strand[:length]
+    if len(strand) % 3 != 0:
+        strand = strand[: len(strand) - (len(strand) % 3)]
+    if not strand.endswith(tuple(STOP_CODONS)):
+        strand = strand[:-3] + random.choice(list(STOP_CODONS))
     return strand
 
 
-file_path_100k = Path(__file__).with_name("dna_template_100k.txt")
-file_path_1m = Path(__file__).with_name("dna_template_1m.txt")
-
-SMALL_STRAND = ["AUGGCACUGGUC", MRNA, True]
-MEDIUM_STRAND = ["CCGAUGGCUCCUGAACGUAUCGGAAAUUAA", MRNA, True]
-LARGE_STRAND = ["CCGAUGGCUCCUGAACGUAUCGGAAAUACCGUUGCUAAGGCUACGAUCGGCUAUCGAACCGGUUAACGCUAAGCUCGGAUCCGAUCGAAUAA", MRNA, True]
-STRAND_100K = [read_strand(file_path_100k), CODING, True]
-STRAND_1M = [read_strand(file_path_1m), TEMPLATE, False]
-TESTS = [SMALL_STRAND, MEDIUM_STRAND, LARGE_STRAND, STRAND_100K, STRAND_1M]
-NUM_REPEATED_SMALL_STRANDS = 1000000
-NUM_REPEATED_BIG_STRANDS = 10000
+NUM_REPEATED_SMALL_STRANDS = 100_000
+NUM_REPEATED_BIG_STRANDS = 1_000
+BENCHMARK_SIZES = {
+    "Small": (12, NUM_REPEATED_SMALL_STRANDS),
+    "Medium": (30, NUM_REPEATED_SMALL_STRANDS),
+    "Large": (90, NUM_REPEATED_SMALL_STRANDS),
+    "~100K": (100_000, NUM_REPEATED_BIG_STRANDS),
+    "~1M": (1_000_000, NUM_REPEATED_BIG_STRANDS),
+}
 
 
-def measure_time_decode(strand, repetitions):
-    sequence = strand[0]
+def measure_time_decode(strand, strand_type, five_to_three, repetitions):
     start = time.perf_counter()
     for _ in range(repetitions):
-        decode(strand=strand[0], strand_type=strand[1], five_to_three=strand[2])
+        decode(strand=strand, strand_type=strand_type, five_to_three=five_to_three)
     elapsed = time.perf_counter() - start
-    bases_processed = len(sequence) * repetitions
+    bases_processed = len(strand) * repetitions
     bases_per_second = bases_processed / elapsed
     return elapsed, bases_per_second
 
 
+def build_benchmark_cases():
+    random.seed(12)
+    cases = []
+    for name, (length, repetitions) in BENCHMARK_SIZES.items():
+        strand = generate_valid_mrna_strand(length)
+        cases.append((name, strand, MRNA, True, repetitions))
+    return cases
+
+
 def main():
-    tests = [
-        ("Small", SMALL_STRAND, NUM_REPEATED_SMALL_STRANDS),
-        ("Medium", MEDIUM_STRAND, NUM_REPEATED_SMALL_STRANDS),
-        ("Large", LARGE_STRAND, NUM_REPEATED_SMALL_STRANDS),
-        ("~100K", STRAND_100K, NUM_REPEATED_BIG_STRANDS),
-        ("~1M", STRAND_1M, NUM_REPEATED_BIG_STRANDS),
-    ]
+    tests = build_benchmark_cases()
+
     header = ["size", "bases", "repetitions", "time_seconds", "bases_per_second"]
     with open("tests/benchmark_run.csv", mode="w", newline="", encoding="utf-8") as file_out:
         writer_out = csv.writer(file_out)
         writer_out.writerow(header)
-        for name, strand, repetitions in tests:
-            elapsed, bases_per_second = measure_time_decode(strand, repetitions)
-            writer_out.writerow([name, len(strand[0]), repetitions, elapsed, bases_per_second])
+        for name, strand, strand_type, five_to_three, repetitions in tests:
+            elapsed, bases_per_second = measure_time_decode(
+                strand=strand,
+                strand_type=strand_type,
+                five_to_three=five_to_three,
+                repetitions=repetitions,
+            )
+            writer_out.writerow([name, len(strand), repetitions, elapsed, bases_per_second])
             print(
-                    f"{name}: | "
-                    f"{len(strand[0])} bases | "
-                    f"{elapsed:.4f}s | "
-                    f"{bases_per_second:,.0f} bases/sec | "
-                    f"Measured over {repetitions} function calls"
-                )
+                f"{name}: | "
+                f"{len(strand)} bases | "
+                f"{elapsed:.4f}s | "
+                f"{bases_per_second:,.0f} bases/sec | "
+                f"Measured over {repetitions} function calls"
+            )
+
 
 if __name__ == "__main__":
     main()
