@@ -73,6 +73,7 @@ Deployment
 
 ```text
 .
+|-- .env.example
 |-- .gitignore
 |-- .github/
 |   `-- workflows/
@@ -86,7 +87,6 @@ Deployment
 |   `-- decoder.py
 |-- frontend/
 |   |-- .gitignore
-|   |-- .env.example
 |   |-- eslint.config.js
 |   |-- index.html
 |   |-- package.json
