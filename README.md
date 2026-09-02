@@ -193,6 +193,59 @@ VITE_API_URL=http://localhost:8000
 
 The Vite development server must be restarted after changes to environment variables. The local frontend origin is already permitted by the backend CORS configuration.
 
+## Database
+
+The project now includes a database layer built with SQLAlchemy. Configuration is defined in `api/database.py`, and the database tables are created with `api/create_tables.py` using the shared declarative base.
+
+### Current database setup
+
+- `DATABASE_URL` is loaded from the environment at startup.
+- `Base` is created once and shared across all models.
+- `get_db()` provides a database session for FastAPI dependency injection.
+- The current schema is implemented in `api/models.py` and includes user accounts, saved sequences, and decoding history.
+
+### Schema overview
+
+```text
+users
+- id: integer, primary key
+- username: string(50), unique, not null
+- email: string(255), unique, not null
+- password_hash: string(255), not null
+- created_at: datetime, not null
+- updated_at: datetime, not null
+
+saved_sequences
+- id: integer, primary key
+- user_id: integer, foreign key -> users.id, not null
+- name: string(50), not null
+- sequence: text, not null
+- sequence_type: string(8), not null
+- five_to_three: boolean, not null
+- created_at: datetime, not null
+- updated_at: datetime, not null
+
+decoding_history
+- id: integer, primary key
+- user_id: integer, foreign key -> users.id, not null
+- input_sequence: text, not null
+- input_type: string(8), not null
+- five_to_three: boolean, not null
+- converted_sequence: text, not null
+- proteins: json, not null
+- created_at: datetime, not null
+```
+
+### Relationships
+
+- A `User` can have many `SavedSequence` records.
+- A `User` can have many `DecodingHistory` entries.
+- Each `SavedSequence` belongs to one user via `user_id`.
+- Each `DecodingHistory` entry belongs to one user via `user_id`.
+- The `proteins` field in `decoding_history` stores the translated protein list as JSON.
+
+This database layer is ready to support user-specific saved strands and a persistent decoding log as the app grows.
+
 ## API
 
 ### `POST /decode`
@@ -332,12 +385,15 @@ Stage 2 strengthened the application's reliability, maintainability, test covera
 
 The intended outcome is a dependable application supported by repeatable quality checks and a proven large-input performance baseline.
 
-### Stage 3: Users and Persistence
+### Stage 3: Users and Persistence (In Progress)
 
-Stage 3 will introduce persistence and account management, transforming the public decoder into a multi-user application.
+Stage 3 is introducing persistence and account support, extending the public decoder into a user-aware application.
 
-- [ ] **Data persistence:** Add PostgreSQL support for user accounts, saved DNA/RNA sequences, and decoding history.
+- [x] **Data persistence foundation:** Added SQLAlchemy configuration, a shared declarative base, and the current schema for users, saved sequences, and decoding history.
+- [ ] **Database integration:** Connect the application to a managed PostgreSQL database and finalize environment configuration for deployment.
 - [ ] **Account management:** Implement registration, login, logout, password hashing, authentication, authorization, and user profiles.
 - [ ] **Access control:** Add protected frontend routes and API endpoints, ensuring that user-specific data is accessible only to its owner.
 - [ ] **Security:** Apply secure session and authentication practices together with appropriate protections for public API endpoints.
 - [ ] **Decoder capabilities:** Extend the current DNA functionality where additional features provide practical value.
+
+The project has moved beyond the original prototype and now includes a working persistence foundation alongside the decoder, API, frontend, and testing setup.
