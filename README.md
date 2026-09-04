@@ -197,6 +197,34 @@ The Vite development server must be restarted after changes to environment varia
 
 The project now includes a database layer built with SQLAlchemy. Configuration is defined in `api/database.py`, and the database tables are created with `api/create_tables.py` using the shared declarative base.
 
+### Local database setup
+
+Local development requires a running PostgreSQL server. Create a database named `dna_decoder`, then copy the example environment file to the project root and update the connection details if your PostgreSQL credentials differ:
+
+```bash
+cp .env.example .env
+```
+
+In PowerShell, use:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+The example connection uses the `postgres` user, the password `postgres`, and PostgreSQL on `localhost:5432`:
+
+```env
+DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/dna_decoder
+```
+
+After PostgreSQL is running and the dependencies are installed, create the tables from the project root:
+
+```bash
+python api/create_tables.py
+```
+
+Start the backend with `uvicorn api.main:app --reload`. The backend loads `DATABASE_URL` from the root `.env` file at startup.
+
 ### Current database setup
 
 - `DATABASE_URL` is loaded from the environment at startup.
