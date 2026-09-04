@@ -9,6 +9,8 @@ on:
       - "frontend/**"
       - ".github/workflows/**"
       - "requirements.txt"
+      - "README.md"
+      - ".env.example"
   pull_request:
     paths:
       - "api/**"
@@ -17,6 +19,8 @@ on:
       - "frontend/**"
       - ".github/workflows/**"
       - "requirements.txt"
+      - "README.md"
+      - ".env.example"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
