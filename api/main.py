@@ -1,8 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from decoder.decoder import decode
 from pydantic import BaseModel
 from typing import Literal
+from .database import get_db
+from sqlalchemy.orm import Session
 
 app = FastAPI()
 
@@ -26,7 +28,7 @@ class DecodeRequest(BaseModel):
 
 
 @app.post("/decode")
-def decode_dna(request: DecodeRequest):
+def decode_dna(request: DecodeRequest, db: Session = Depends(get_db)):
     """Decode a strand and return its converted codons and proteins."""
     try:
         converted, proteins = decode(request.strand, request.strand_type, request.five_to_three)
